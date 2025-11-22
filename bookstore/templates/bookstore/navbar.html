@@ -1,0 +1,440 @@
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    header {
+        background-color: #1f2937;
+        color: white;
+        padding: 1.2rem 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    header h1 {
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    header h1 a {
+        color: white;
+        text-decoration: none;
+    }
+
+    nav {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    nav a {
+        color: white;
+        text-decoration: none;
+        margin-left: 2rem;
+        font-weight: 500;
+        transition: color 0.3s;
+        position: relative;
+    }
+
+    nav a::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: #22d3ee;
+        transition: width 0.3s;
+    }
+
+    nav a:hover::after {
+        width: 100%;
+    }
+
+    nav a:hover {
+        color: #22d3ee;
+    }
+
+    .cart-link {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        background: rgba(102, 126, 234, 0.15);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        margin-left: 1.5rem !important;
+        border: 1px solid rgba(102, 126, 234, 0.3);
+        transition: all 0.3s;
+    }
+
+    .cart-link:hover {
+        background: rgba(102, 126, 234, 0.25);
+        border-color: rgba(102, 126, 234, 0.5);
+        transform: translateY(-2px);
+    }
+
+    .cart-link::after {
+        display: none;
+    }
+
+    .cart-badge {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 50px;
+        font-weight: 700;
+        min-width: 20px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    .navbar-user {
+        position: relative;
+        color: white;
+        font-weight: 500;
+        margin-left: 1.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .navbar-user:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .user-dropdown {
+        position: absolute;
+        top: calc(100% + 0.5rem);
+        right: 0;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        min-width: 200px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .navbar-user:hover .user-dropdown {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .user-dropdown a {
+        display: block;
+        padding: 0.9rem 1.2rem;
+        color: #1f2937;
+        text-decoration: none;
+        transition: all 0.2s;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .user-dropdown a::after {
+        display: none;
+    }
+
+    .user-dropdown a:hover {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.12) 100%);
+        color: #667eea;
+        padding-left: 1.5rem;
+        border-left: 3px solid #667eea;
+    }
+
+    .user-dropdown-divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+        margin: 0.3rem 0;
+    }
+
+    .btn-logout {
+        background: rgba(239, 68, 68, 0.2);
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        color: white;
+        padding: 0.5rem 1.2rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: 500;
+        margin-left: 1rem;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-logout:hover {
+        background: rgba(239, 68, 68, 0.3);
+        border-color: rgba(239, 68, 68, 0.7);
+    }
+
+    /* ============================================ */
+    /* FIXED MESSAGE ALERTS - SHOWS ON EVERY PAGE */
+    /* ============================================ */
+    .messages-container {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 9999;
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .alert {
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        animation: slideInRight 0.4s ease, fadeOut 0.4s ease 4.6s;
+        font-weight: 500;
+        font-size: 0.95rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .alert::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 4px;
+        background: currentColor;
+        width: 100%;
+        animation: shrink 5s linear;
+    }
+
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(100px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes fadeOut {
+        to {
+            opacity: 0;
+            transform: translateX(100px);
+        }
+    }
+
+    @keyframes shrink {
+        from {
+            width: 100%;
+        }
+        to {
+            width: 0%;
+        }
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #065f46;
+        border-left: 5px solid #10b981;
+    }
+
+    .alert-warning {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        color: #92400e;
+        border-left: 5px solid #f59e0b;
+    }
+
+    .alert-error {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        color: #991b1b;
+        border-left: 5px solid #ef4444;
+    }
+
+    .alert-info {
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        color: #1e40af;
+        border-left: 5px solid #3b82f6;
+    }
+
+    .alert-icon {
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .alert-content {
+        flex: 1;
+    }
+
+    .alert-close {
+        background: none;
+        border: none;
+        color: currentColor;
+        font-size: 1.3rem;
+        cursor: pointer;
+        opacity: 0.6;
+        transition: opacity 0.2s;
+        flex-shrink: 0;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .alert-close:hover {
+        opacity: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        header {
+            padding: 1rem 1.5rem;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        nav {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        nav a {
+            margin-left: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .cart-link {
+            margin-left: 1rem !important;
+            padding: 0.4rem 0.8rem;
+        }
+
+        .navbar-user {
+            margin-left: 0.5rem;
+            font-size: 0.85rem;
+            padding: 0.4rem 0.8rem;
+        }
+
+        .user-dropdown {
+            right: auto;
+            left: 0;
+        }
+
+        .btn-logout {
+            margin-left: 0.5rem;
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .cart-badge {
+            font-size: 0.65rem;
+            padding: 0.15rem 0.4rem;
+        }
+
+        .messages-container {
+            top: 140px;
+            right: 10px;
+            left: 10px;
+            max-width: none;
+        }
+
+        .alert {
+            font-size: 0.85rem;
+            padding: 0.9rem 1.2rem;
+        }
+    }
+</style>
+
+<header>
+    <h1><a href="{% url 'home' %}">📚 Shelfly</a></h1>
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'book_list' %}">Books</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        
+        {% if user.is_authenticated %}
+            <a href="{% url 'view_cart' %}" class="cart-link">
+                🛒 Cart
+                {% if user.customer.cart.total_items > 0 %}
+                    <span class="cart-badge">{{ user.customer.cart.total_items }}</span>
+                {% endif %}
+            </a>
+            
+            <div class="navbar-user">
+                👤 {{ user.username }}
+                <div class="user-dropdown">
+                    <a href="{% url 'edit_profile' %}">📝 My Profile</a>
+                    <div class="user-dropdown-divider"></div>
+                    <a href="{% url 'order_history' %}">📦 My Orders</a>
+                </div>
+            </div>
+            
+            <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+    </nav>
+</header>
+
+<!-- UNIVERSAL MESSAGE ALERTS - SHOWS ON EVERY PAGE -->
+{% if messages %}
+<div class="messages-container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" id="alert-{{ forloop.counter }}">
+        <span class="alert-icon">
+            {% if message.tags == 'success' %}✅
+            {% elif message.tags == 'warning' %}⚠️
+            {% elif message.tags == 'error' %}❌
+            {% else %}ℹ️
+            {% endif %}
+        </span>
+        <span class="alert-content">{{ message }}</span>
+        <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    // Auto-remove alerts after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach((alert, index) => {
+            setTimeout(() => {
+                alert.style.animation = 'fadeOut 0.4s ease forwards';
+                setTimeout(() => alert.remove(), 400);
+            }, 5000 + (index * 200)); // Stagger removal if multiple alerts
+        });
+    });
+</script>
+{% endif %}

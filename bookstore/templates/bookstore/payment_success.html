@@ -1,0 +1,527 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful | Shelfly</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .success-wrapper {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .success-header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+            position: relative;
+        }
+
+        .success-header::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: scaleIn 0.6s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .success-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .success-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+        }
+
+        .success-content {
+            padding: 3rem 2rem;
+        }
+
+        .order-confirmation {
+            background: #f9fafb;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid #10b981;
+        }
+
+        .confirmation-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e5e7eb;
+            align-items: center;
+        }
+
+        .confirmation-row:last-child {
+            border-bottom: none;
+        }
+
+        .confirmation-label {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .confirmation-value {
+            color: #1f2937;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .confirmation-value.highlight {
+            color: #10b981;
+            font-size: 1.1rem;
+        }
+
+        .payment-details-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-card {
+            background: #f9fafb;
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 2px solid #e5e7eb;
+        }
+
+        .detail-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-info {
+            color: #6b7280;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .detail-info strong {
+            color: #1f2937;
+        }
+
+        .payment-card-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .card-field {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card-field:last-child {
+            border-bottom: none;
+        }
+
+        .card-field-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .card-field-value {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .order-items-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .order-items {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .order-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 12px;
+            align-items: center;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 110px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: white;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-title {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .item-info {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .summary-section {
+            background: #f9fafb;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-row.total {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1f2937;
+            padding-top: 1rem;
+            border-top: 2px solid #e5e7eb;
+            margin-top: 1rem;
+        }
+
+        .summary-row.total .amount {
+            color: #10b981;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f0f4ff;
+        }
+
+        .tracking-info {
+            background: #dbeafe;
+            border-left: 4px solid #0284c7;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 2rem;
+            color: #0c4a6e;
+        }
+
+        .tracking-info strong {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            background-color: #1f2937;
+            color: #9ca3af;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.95rem;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .success-header h1 {
+                font-size: 2rem;
+            }
+
+            .payment-details-section {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .item-image {
+                width: 60px;
+                height: 85px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'bookstore/navbar.html' %}
+
+    <div class="container">
+        <div class="success-wrapper">
+            <!-- Success Header -->
+            <div class="success-header">
+                <div class="success-icon">✓</div>
+                <h1>Payment Successful!</h1>
+                <p>Your order has been placed and payment processed</p>
+            </div>
+
+            <!-- Success Content -->
+            <div class="success-content">
+                
+                <!-- Order Confirmation -->
+                <div class="order-confirmation">
+                    <div class="confirmation-row">
+                        <span class="confirmation-label">Order Number:</span>
+                        <span class="confirmation-value highlight">#{{ order.id }}</span>
+                    </div>
+                    <div class="confirmation-row">
+                        <span class="confirmation-label">Order Date:</span>
+                        <span class="confirmation-value">{{ order.order_date|date:"d M, Y - H:i" }}</span>
+                    </div>
+                    <div class="confirmation-row">
+                        <span class="confirmation-label">Order Status:</span>
+                        <span class="confirmation-value">🔵 Confirmed</span>
+                    </div>
+                    <div class="confirmation-row">
+                        <span class="confirmation-label">Total Amount Paid:</span>
+                        <span class="confirmation-value highlight">Rs. {{ order.total_amount|floatformat:2 }}</span>
+                    </div>
+                </div>
+
+                <!-- Payment & Delivery Details -->
+                <div class="payment-details-section">
+                    <!-- Payment Information -->
+                    <div class="detail-card">
+                        <div class="detail-title">💳 Payment Information</div>
+                        <div class="payment-card-info">
+                            <div class="card-field">
+                                <span class="card-field-label">Card Type:</span>
+                                <span class="card-field-value">{{ payment_details.card_type|default:"Card" }}</span>
+                            </div>
+                            <div class="card-field">
+                                <span class="card-field-label">Card Number:</span>
+                                <span class="card-field-value" style="font-family: 'Courier New', monospace;">{{ payment_details.masked_card|default:"•••• •••• •••• ••••" }}</span>
+                            </div>
+                            <div class="card-field">
+                                <span class="card-field-label">Transaction ID:</span>
+                                <span class="card-field-value" style="font-size: 0.9rem;">{{ payment_details.transaction_id|default:"---" }}</span>
+                            </div>
+                            <div class="card-field">
+                                <span class="card-field-label">Payment Method:</span>
+                                <span class="card-field-value">{{ payment.method }}</span>
+                            </div>
+                            <div class="card-field">
+                                <span class="card-field-label">Payment Status:</span>
+                                <span class="card-field-value">✓ Paid</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Information -->
+                    <div class="detail-card">
+                        <div class="detail-title">📍 Delivery Address</div>
+                        <div class="detail-info">
+                            <strong>{{ order.delivery_name }}</strong><br>
+                            📞 {{ order.delivery_phone }}<br><br>
+                            <strong>Address:</strong><br>
+                            {{ order.delivery_address }}<br>
+                            {% if order.delivery_notes %}
+                            <br>
+                            <strong>Notes:</strong><br>
+                            {{ order.delivery_notes }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="order-items-section">
+                    <h2 class="section-title">📦 Order Items</h2>
+                    <div class="order-items">
+                        {% for item in order.orderitem_set.all %}
+                        <div class="order-item">
+                            <div class="item-image">
+                                {% if item.book.cover_image %}
+                                    <img src="{{ item.book.cover_image.url }}" alt="{{ item.book.title }}">
+                                {% else %}
+                                    <img src="{% static 'images/no-cover.png' %}" alt="{{ item.book.title }}">
+                                {% endif %}
+                            </div>
+                            <div class="item-details">
+                                <div class="item-title">{{ item.book.title }}</div>
+                                <div class="item-info">{{ item.book.author }}</div>
+                                <div class="item-info">Quantity: <strong>{{ item.quantity }}</strong> × Rs. {{ item.unit_price }}</div>
+                                <div class="item-price">Subtotal: Rs. {{ item.subtotal|floatformat:2 }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="summary-section">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span>Rs. {{ order.subtotal|floatformat:2 }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping Fee:</span>
+                        <span>{% if order.shipping_fee == 0 %}FREE ✓{% else %}Rs. {{ order.shipping_fee|floatformat:2 }}{% endif %}</span>
+                    </div>
+                    {% if order.total_discount > 0 %}
+                    <div class="summary-row">
+                        <span>Total Discount:</span>
+                        <span style="color: #10b981;">-Rs. {{ order.total_discount|floatformat:2 }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="summary-row total">
+                        <span>Total Amount:</span>
+                        <span class="amount">Rs. {{ order.total_amount|floatformat:2 }}</span>
+                    </div>
+                </div>
+
+                <!-- Tracking Info -->
+                <div class="tracking-info">
+                    <strong>📦 Track Your Order</strong>
+                    You can track your order status in real-time from your account. We'll notify you when your order is shipped and delivered.
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <a href="{% url 'order_history' %}" class="btn btn-primary">
+                        📋 View All Orders
+                    </a>
+                    <a href="{% url 'book_list' %}" class="btn btn-secondary">
+                        🛍️ Continue Shopping
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Shelfly Online Bookstore. All rights reserved.</p>
+        <p>Thank you for your purchase! We hope you enjoy your books.</p>
+    </footer>
+
+</body>
+</html>

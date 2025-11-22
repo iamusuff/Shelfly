@@ -1,0 +1,289 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Failed | Shelfly</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 2rem;
+        }
+
+        .error-wrapper {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .error-header {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: white;
+            padding: 3rem 2rem;
+            position: relative;
+        }
+
+        .error-header::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .error-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .error-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+        }
+
+        .error-content {
+            padding: 3rem 2rem;
+        }
+
+        .error-message-box {
+            background: #fee2e2;
+            border-left: 5px solid #dc2626;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .error-message-title {
+            font-weight: 700;
+            color: #991b1b;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .error-message-text {
+            color: #7f1d1d;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-reasons {
+            background: #fef2f2;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .error-reasons h3 {
+            color: #991b1b;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .reason-list {
+            list-style: none;
+        }
+
+        .reason-list li {
+            color: #7f1d1d;
+            margin-bottom: 0.7rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .reason-list li::before {
+            content: '✗';
+            position: absolute;
+            left: 0;
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.5);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f0f4ff;
+        }
+
+        .help-text {
+            color: #6b7280;
+            font-size: 0.95rem;
+            margin-top: 1rem;
+        }
+
+        .help-text a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .help-text a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background-color: #1f2937;
+            color: #9ca3af;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.95rem;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 600px) {
+            .error-header h1 {
+                font-size: 2rem;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .error-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="error-wrapper">
+            <!-- Error Header -->
+            <div class="error-header">
+                <div class="error-icon">✕</div>
+                <h1>Payment Failed</h1>
+                <p>We couldn't process your payment</p>
+            </div>
+
+            <!-- Error Content -->
+            <div class="error-content">
+                
+                <!-- Error Message -->
+                <div class="error-message-box">
+                    <div class="error-message-title">⚠️ Payment Could Not Be Processed</div>
+                    <div class="error-message-text">
+                        There was an issue processing your card payment. Your order has NOT been created and no charge has been made to your account.
+                    </div>
+                    <div class="error-message-text">
+                        Please check your card details and try again, or use an alternative payment method.
+                    </div>
+                </div>
+
+                <!-- Common Reasons -->
+                <div class="error-reasons">
+                    <h3>Common reasons for payment failure:</h3>
+                    <ul class="reason-list">
+                        <li>Incorrect card number, expiry date, or CVV</li>
+                        <li>Card has expired or is not active</li>
+                        <li>Insufficient funds in your account</li>
+                        <li>Card has been blocked or reported as lost</li>
+                        <li>Network or connection issue</li>
+                        <li>Payment amount exceeds your card limit</li>
+                    </ul>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <a href="{% url 'checkout' %}" class="btn btn-primary">
+                        🔄 Retry Payment
+                    </a>
+                    <a href="{% url 'view_cart' %}" class="btn btn-secondary">
+                        🛒 Back to Cart
+                    </a>
+                </div>
+
+                <!-- Help Text -->
+                <div class="help-text">
+                    💡 Having trouble? You can also choose <strong>Cash on Delivery</strong> at checkout, or <a href="{% url 'contact' %}">contact us</a> for assistance.
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Shelfly Online Bookstore. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

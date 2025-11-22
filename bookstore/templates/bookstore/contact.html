@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | Shelfly</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f8f9fc;
+            color: #333;
+        }
+
+        /* Message Alerts */
+        .message-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+        }
+
+        .alert {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.5s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            font-size: 1.5rem;
+            margin-left: 1rem;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .close-btn:hover {
+            opacity: 1;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -200px;
+            right: -200px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            bottom: -150px;
+            left: -150px;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .page-header h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            animation: fadeInDown 1s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: -3rem auto 5rem auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .contact-form-section {
+            background: white;
+            padding: 3rem;
+            border-radius: 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-form-section h3 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-form-section p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: "Poppins", sans-serif;
+            transition: all 0.3s;
+            background-color: #f9fafb;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .contact-info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            border-left: 5px solid #667eea;
+        }
+
+        .info-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.15);
+        }
+
+        .info-card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-icon {
+            font-size: 2.5rem;
+        }
+
+        .info-card h4 {
+            color: #667eea;
+            font-size: 1.3rem;
+        }
+
+        .info-card p {
+            color: #4b5563;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .info-card a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .info-card a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .faq-section {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .faq-section h3 {
+            font-size: 2.5rem;
+            color: #1f2937;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .faq-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: #f9fafb;
+            margin-bottom: 1.5rem;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            border-color: #667eea;
+        }
+
+        .faq-question {
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 1.1rem;
+        }
+
+        .faq-question:hover {
+            color: #667eea;
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            color: #667eea;
+            transition: transform 0.3s;
+        }
+
+        .faq-answer {
+            padding: 0 2rem 1.5rem 2rem;
+            color: #4b5563;
+            line-height: 1.7;
+            display: none;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+        }
+
+        .map-section {
+            padding: 5rem 2rem;
+            background: #f8f9fc;
+            text-align: center;
+        }
+
+        .map-section h3 {
+            font-size: 2.5rem;
+            color: #1f2937;
+            margin-bottom: 2rem;
+        }
+
+        .map-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 450px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        footer {
+            background-color: #1f2937;
+            color: #9ca3af;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.95rem;
+        }
+
+        footer a {
+            color: #22d3ee;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 968px) {
+            .contact-wrapper {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                margin-top: 2rem;
+            }
+
+            .page-header h2 {
+                font-size: 2.2rem;
+            }
+
+            .page-header p {
+                font-size: 1.1rem;
+            }
+
+            .contact-form-section,
+            .faq-section,
+            .map-section {
+                padding: 3rem 1.5rem;
+            }
+
+            .faq-section h3,
+            .map-section h3 {
+                font-size: 2rem;
+            }
+
+            .message-container {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'bookstore/navbar.html' %}
+
+    <!-- Message Alerts -->
+    {% if messages %}
+    <div class="message-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" id="alert-message">
+            {{ message }}
+            <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <section class="page-header">
+        <h2>📞 Get In Touch</h2>
+        <p>We'd love to hear from you! Reach out with any questions or feedback</p>
+    </section>
+
+    <div class="contact-wrapper">
+        <div class="contact-form-section">
+            <h3>📬 Send Us a Message</h3>
+            <p>Fill out the form below and we'll get back to you as soon as possible.</p>
+            
+            <form method="POST" action="{% url 'contact' %}">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="+92 300 1234567">
+                </div>
+
+                <div class="form-group">
+                    <label for="subject">Subject *</label>
+                    <select id="subject" name="subject" required>
+                        <option value="">Select a subject</option>
+                        <option value="order">Order Inquiry</option>
+                        <option value="book">Book Recommendation</option>
+                        <option value="delivery">Delivery Issue</option>
+                        <option value="feedback">Feedback</option>
+                        <option value="partnership">Partnership</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Message *</label>
+                    <textarea id="message" name="message" placeholder="Tell us more about your inquiry..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Send Message ✉️</button>
+            </form>
+        </div>
+
+        <div class="contact-info-section">
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-icon">📧</div>
+                    <h4>Email Us</h4>
+                </div>
+                <p>
+                    Have a question? Drop us an email anytime:<br>
+                    <a href="mailto:support@shelfly.com">support@shelfly.com</a><br>
+                    <a href="mailto:orders@shelfly.com">orders@shelfly.com</a>
+                </p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-icon">📱</div>
+                    <h4>Call Us</h4>
+                </div>
+                <p>
+                    We're available Monday to Saturday, 9 AM - 6 PM:<br>
+                    <a href="tel:+923001234567">+92 300 1234567</a><br>
+                    <a href="tel:+923219876543">+92 321 9876543</a>
+                </p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-icon">📍</div>
+                    <h4>Visit Us</h4>
+                </div>
+                <p>
+                    Shelfly Headquarters<br>
+                    Karachi, Sindh, Pakistan<br>
+                    Come visit our office or warehouse
+                </p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-icon">⏰</div>
+                    <h4>Business Hours</h4>
+                </div>
+                <p>
+                    Monday - Friday: 9:00 AM - 6:00 PM<br>
+                    Saturday: 10:00 AM - 4:00 PM<br>
+                    Sunday: Closed
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <section class="faq-section">
+        <h3>❓ Frequently Asked Questions</h3>
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    How long does delivery take?
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    Delivery typically takes 3-7 business days depending on your location in Pakistan. Karachi deliveries are usually completed within 2-3 days.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    What are your payment methods?
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    We accept Cash on Delivery (COD), bank transfers, and all major credit/debit cards. Online payment is secure and encrypted.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Can I return or exchange a book?
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    Yes! We offer a 7-day return policy for damaged or defective books. The book must be in its original condition. Contact us for the return process.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Do you ship outside Pakistan?
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    Currently, we only ship within Pakistan. We're working on expanding internationally. Subscribe to our newsletter to stay updated!
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    How can I track my order?
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    Once your order is shipped, you'll receive a tracking number via email or SMS. You can use this number to track your package on our website.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="map-section">
+        <h3>🗺️ Find Us</h3>
+        <div class="map-container">
+            <div class="map-placeholder">
+                📍
+            </div>
+            <p style="margin-top: 1.5rem; color: #6b7280;">
+                Visit us at our office in Karachi or contact us for directions
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Shelfly Online Bookstore. All rights reserved.</p>
+        <p>Built with ❤️ for book lovers | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    </footer>
+
+    <script>
+        function toggleFaq(element) {
+            const faqItem = element.parentElement;
+            const wasActive = faqItem.classList.contains('active');
+            
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            if (!wasActive) {
+                faqItem.classList.add('active');
+            }
+        }
+
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.animation = 'slideOut 0.5s ease forwards';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,853 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Payment | Shelfly</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            background: rgba(0, 0, 0, 0.1);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .page-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            gap: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .payment-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+
+        .payment-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.6rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .form-group input.success {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .form-group-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 0.85rem;
+            margin-top: 0.4rem;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .success-message {
+            color: #10b981;
+            font-size: 0.85rem;
+            margin-top: 0.4rem;
+            display: none;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-info-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .card-type {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-number-display {
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 1rem;
+        }
+
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .card-holder-display {
+            font-size: 0.9rem;
+        }
+
+        .card-holder-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 0.2rem;
+        }
+
+        .card-expiry-display {
+            text-align: right;
+        }
+
+        .card-expiry-label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .card-expiry {
+            font-size: 1.3rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .delivery-info {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .delivery-info h4 {
+            font-size: 0.95rem;
+            color: #374151;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+
+        .delivery-info p {
+            font-size: 0.9rem;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 0.3rem;
+        }
+
+        .delivery-info p strong {
+            color: #1f2937;
+        }
+
+        .submit-btn {
+            display: inline-block;
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .submit-btn.loading::after {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .order-summary-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .order-items {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 1.5rem;
+            padding-right: 0.5rem;
+        }
+
+        .order-items::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .order-items::-webkit-scrollbar-track {
+            background: #f3f4f6;
+            border-radius: 10px;
+        }
+
+        .order-items::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .order-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-image {
+            width: 60px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #f3f4f6;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-title {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .item-info {
+            color: #6b7280;
+            font-size: 0.85rem;
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: #667eea;
+            align-self: center;
+            white-space: nowrap;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            color: #4b5563;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .summary-row.total {
+            border-top: 2px solid #e5e7eb;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .summary-row.total .amount {
+            color: #667eea;
+        }
+
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            color: #10b981;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        footer {
+            background-color: #1f2937;
+            color: #9ca3af;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.95rem;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 968px) {
+            .payment-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .order-summary-card {
+                position: static;
+                order: -1;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .page-header h2 {
+                font-size: 2rem;
+            }
+
+            .payment-card,
+            .order-summary-card {
+                padding: 1.5rem;
+            }
+
+            .form-group-row {
+                grid-template-columns: 1fr;
+            }
+
+            .item-image {
+                width: 50px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'bookstore/navbar.html' %}
+
+    <section class="page-header">
+        <h2>💳 Card Payment</h2>
+        <p>Enter your card details to complete payment</p>
+    </section>
+
+    <div class="container">
+        <a href="{% url 'checkout' %}" class="back-link">
+            ← Back to Checkout
+        </a>
+
+        <div class="payment-wrapper">
+            <div class="payment-card">
+                <h3 class="card-section-title">🔐 Card Details</h3>
+
+                <!-- Card Preview -->
+                <div class="card-info-display" id="cardPreview">
+                    <div class="card-type" id="cardType">CARD TYPE</div>
+                    <div class="card-number-display" id="cardNumberDisplay">•••• •••• •••• ••••</div>
+                    <div class="card-bottom">
+                        <div class="card-holder-display">
+                            <div class="card-expiry-label">CARD HOLDER</div>
+                            <div class="card-holder-name" id="cardHolderDisplay">YOUR NAME</div>
+                        </div>
+                        <div class="card-expiry-display">
+                            <div class="card-expiry-label">VALID THRU</div>
+                            <div class="card-expiry" id="cardExpiryDisplay">MM/YY</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Form -->
+                <form id="cardPaymentForm" method="POST">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="card_number">Card Number *</label>
+                        <input 
+                            type="text" 
+                            id="card_number" 
+                            name="card_number" 
+                            placeholder="1234 5678 9012 3456"
+                            maxlength="19"
+                            required
+                        >
+                        <div class="error-message" id="cardNumberError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="card_holder">Card Holder Name *</label>
+                        <input 
+                            type="text" 
+                            id="card_holder" 
+                            name="card_holder" 
+                            placeholder="John Doe"
+                            required
+                        >
+                        <div class="error-message" id="cardHolderError"></div>
+                    </div>
+
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label for="expiry_month">Expiry Month *</label>
+                            <input 
+                                type="text" 
+                                id="expiry_month" 
+                                name="expiry_month" 
+                                placeholder="MM"
+                                maxlength="2"
+                                required
+                            >
+                            <div class="error-message" id="expiryMonthError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="expiry_year">Expiry Year *</label>
+                            <input 
+                                type="text" 
+                                id="expiry_year" 
+                                name="expiry_year" 
+                                placeholder="YY"
+                                maxlength="2"
+                                required
+                            >
+                            <div class="error-message" id="expiryYearError"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cvv">CVV (Security Code) *</label>
+                        <input 
+                            type="text" 
+                            id="cvv" 
+                            name="cvv" 
+                            placeholder="123"
+                            maxlength="4"
+                            required
+                        >
+                        <div class="error-message" id="cvvError"></div>
+                    </div>
+
+                    <!-- Hidden Delivery Fields - Pre-filled from context -->
+                    <input type="hidden" id="delivery_name" name="delivery_name" value="{{ delivery_name|default:customer.user.get_full_name|default:customer.user.username }}">
+                    <input type="hidden" id="delivery_phone" name="delivery_phone" value="{{ delivery_phone|default:customer.phone }}">
+                    <input type="hidden" id="delivery_address" name="delivery_address" value="{{ delivery_address|default:customer.address }}">
+                    <input type="hidden" id="delivery_notes" name="delivery_notes" value="{{ delivery_notes|default:'' }}"
+
+                    <!-- Delivery Info Display -->
+                    <div class="delivery-info">
+                        <h4>📍 Delivery Address</h4>
+                        <p><strong>{{ delivery_name|default:customer.user.get_full_name|default:customer.user.username }}</strong></p>
+                        <p>{{ delivery_phone|default:customer.phone }}</p>
+                        <p>{{ delivery_address|default:customer.address }}</p>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        💰 Process Payment (Rs. {{ cart.total_amount|floatformat:2 }})
+                    </button>
+                </form>
+
+                <div class="secure-badge">
+                    🔒 Secure Payment
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary-card">
+                <h3 class="summary-title">📋 Order Summary</h3>
+                
+                <div class="order-items">
+                    {% for item in cart_items %}
+                    <div class="order-item">
+                        <div class="item-image">
+                            {% if item.book.cover_image %}
+                                <img src="{{ item.book.cover_image.url }}" alt="{{ item.book.title }}">
+                            {% else %}
+                                <img src="{% static 'images/no-cover.png' %}" alt="{{ item.book.title }}">
+                            {% endif %}
+                        </div>
+                        <div class="item-details">
+                            <div class="item-title">{{ item.book.title }}</div>
+                            <div class="item-info">{{ item.quantity }} × Rs. {{ item.book.price }}</div>
+                        </div>
+                        <div class="item-price">Rs. {{ item.subtotal }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>Rs. {{ cart.subtotal|floatformat:2 }}</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span>{% if cart.shipping_fee == 0 %}FREE ✓{% else %}Rs. {{ cart.shipping_fee|floatformat:2 }}{% endif %}</span>
+                </div>
+
+                {% if cart.total_discount > 0 %}
+                <div class="summary-row">
+                    <span>Total Discount</span>
+                    <span style="color: #10b981; font-weight: 600;">-Rs. {{ cart.total_discount|floatformat:2 }}</span>
+                </div>
+                {% endif %}
+
+                <div class="summary-row total">
+                    <span>Total Amount</span>
+                    <span class="amount">Rs. {{ cart.total_amount|floatformat:2 }}</span>
+                </div>
+
+                <div class="secure-badge">
+                    ✅ Secure Checkout
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <footer>
+        <p>© 2025 Shelfly Online Bookstore. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Real-time card preview updates
+        const cardNumberInput = document.getElementById('card_number');
+        const cardHolderInput = document.getElementById('card_holder');
+        const expiryMonthInput = document.getElementById('expiry_month');
+        const expiryYearInput = document.getElementById('expiry_year');
+        const cvvInput = document.getElementById('cvv');
+
+        // Card number formatting and display
+        cardNumberInput.addEventListener('input', function() {
+            let value = this.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            this.value = formattedValue;
+
+            // Update display - show only last 4 digits masked
+            if (value.length === 0) {
+                document.getElementById('cardNumberDisplay').textContent = '•••• •••• •••• ••••';
+            } else if (value.length <= 4) {
+                document.getElementById('cardNumberDisplay').textContent = value + ' •••• •••• ••••';
+            } else if (value.length <= 8) {
+                document.getElementById('cardNumberDisplay').textContent = value.slice(0, 4) + ' ' + value.slice(4) + ' •••• ••••';
+            } else if (value.length <= 12) {
+                document.getElementById('cardNumberDisplay').textContent = value.slice(0, 4) + ' ' + value.slice(4, 8) + ' ' + value.slice(8) + ' ••••';
+            } else {
+                document.getElementById('cardNumberDisplay').textContent = value.slice(0, 4) + ' ' + value.slice(4, 8) + ' ' + value.slice(8, 12) + ' ' + value.slice(12, 16);
+            }
+
+            // Detect card type
+            updateCardType(value);
+        });
+
+        // Card holder name display
+        cardHolderInput.addEventListener('input', function() {
+            document.getElementById('cardHolderDisplay').textContent = this.value || 'YOUR NAME';
+        });
+
+        // Expiry date display
+        expiryMonthInput.addEventListener('input', function() {
+            updateExpiryDisplay();
+        });
+
+        expiryYearInput.addEventListener('input', function() {
+            updateExpiryDisplay();
+        });
+
+        function updateExpiryDisplay() {
+            const month = expiryMonthInput.value.padStart(2, '0');
+            const year = expiryYearInput.value.padStart(2, '0');
+            document.getElementById('cardExpiryDisplay').textContent = month + '/' + year;
+        }
+
+        // Detect card type
+        function updateCardType(cardNumber) {
+            const patterns = {
+                'Visa': /^4[0-9]{0,15}$/,
+                'Mastercard': /^5[1-5][0-9]{0,14}$/,
+                'Amex': /^3[47][0-9]{0,13}$/,
+                'Discover': /^6(?:011|5[0-9]{0,2})[0-9]{0,12}$/,
+            };
+
+            for (let [type, pattern] of Object.entries(patterns)) {
+                if (pattern.test(cardNumber)) {
+                    document.getElementById('cardType').textContent = type.toUpperCase();
+                    return;
+                }
+            }
+            document.getElementById('cardType').textContent = 'CARD TYPE';
+        }
+
+        // Number input restriction
+        cardNumberInput.addEventListener('keypress', function(e) {
+            if (!/[0-9]/.test(e.key)) e.preventDefault();
+        });
+
+        expiryMonthInput.addEventListener('keypress', function(e) {
+            if (!/[0-9]/.test(e.key)) e.preventDefault();
+        });
+
+        expiryYearInput.addEventListener('keypress', function(e) {
+            if (!/[0-9]/.test(e.key)) e.preventDefault();
+        });
+
+        cvvInput.addEventListener('keypress', function(e) {
+            if (!/[0-9]/.test(e.key)) e.preventDefault();
+        });
+
+        // Form submission
+        document.getElementById('cardPaymentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Validate all fields
+            let hasErrors = false;
+
+            // Validate card number
+            const cardNumber = cardNumberInput.value.replace(/\s/g, '');
+            if (!validateCardNumber(cardNumber)) {
+                hasErrors = true;
+            }
+
+            // Validate card holder
+            if (cardHolderInput.value.length < 3) {
+                showError('cardHolderError', 'Card holder name must be at least 3 characters');
+                hasErrors = true;
+            } else {
+                clearError('cardHolderError');
+            }
+
+            // Validate expiry
+            const month = parseInt(expiryMonthInput.value);
+            const year = parseInt(expiryYearInput.value);
+            if (month < 1 || month > 12) {
+                showError('expiryMonthError', 'Month must be 01-12');
+                hasErrors = true;
+            } else {
+                clearError('expiryMonthError');
+            }
+
+            if (year < 10 || year > 99) {
+                showError('expiryYearError', 'Enter 2-digit year (e.g., 25 for 2025)');
+                hasErrors = true;
+            } else {
+                clearError('expiryYearError');
+            }
+
+            // Validate CVV
+            const cvv = cvvInput.value;
+            if (cvv.length < 3 || cvv.length > 4) {
+                showError('cvvError', 'CVV must be 3-4 digits');
+                hasErrors = true;
+            } else {
+                clearError('cvvError');
+            }
+
+            if (hasErrors) return;
+
+            // Show loading
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            document.getElementById('submitBtn').disabled = true;
+
+            try {
+                const formData = new FormData(this);
+                const response = await fetch('{% url "process_card_payment" %}', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    showError('cardNumberError', data.message);
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    document.getElementById('submitBtn').disabled = false;
+                }
+            } catch (error) {
+                showError('cardNumberError', 'Error processing payment. Please try again.');
+                document.getElementById('loadingOverlay').style.display = 'none';
+                document.getElementById('submitBtn').disabled = false;
+            }
+        });
+
+        // Validation function
+        function validateCardNumber(cardNumber) {
+            if (!/^\d{13,19}$/.test(cardNumber)) {
+                showError('cardNumberError', 'Card number must be 13-19 digits');
+                return false;
+            }
+
+            // Luhn algorithm
+            let sum = 0;
+            let isEven = false;
+            for (let i = cardNumber.length - 1; i >= 0; i--) {
+                let digit = parseInt(cardNumber[i]);
+                if (isEven) {
+                    digit *= 2;
+                    if (digit > 9) digit -= 9;
+                }
+                sum += digit;
+                isEven = !isEven;
+            }
+
+            if (sum % 10 === 0) {
+                clearError('cardNumberError');
+                return true;
+            } else {
+                showError('cardNumberError', 'Invalid card number');
+                return false;
+            }
+        }
+
+        // Helper functions
+        function showError(elementId, message) {
+            const errorEl = document.getElementById(elementId);
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+
+        function clearError(elementId) {
+            const errorEl = document.getElementById(elementId);
+            errorEl.style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,512 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancel Order | Shelfly</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f8f9fc;
+            color: #333;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -200px;
+            right: -100px;
+        }
+
+        .page-header h2 {
+            font-size: 2.5rem;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem 5rem 2rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+            gap: 0.8rem;
+        }
+
+        .cancel-wrapper {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 2rem;
+        }
+
+        .cancel-form-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .warning-banner {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-left: 5px solid #ef4444;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .warning-icon {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+            margin-top: 0.2rem;
+        }
+
+        .warning-content h4 {
+            color: #991b1b;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .warning-content p {
+            color: #7f1d1d;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .char-count {
+            font-size: 0.85rem;
+            color: #9ca3af;
+            margin-top: 0.3rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            margin-top: 0.2rem;
+            flex-shrink: 0;
+        }
+
+        .checkbox-text {
+            color: #374151;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .checkbox-text strong {
+            color: #991b1b;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1.1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .btn-cancel-order {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-cancel-order:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-cancel-order:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-back {
+            background: #e5e7eb;
+            color: #1f2937;
+            box-shadow: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+                    
+        }
+
+        .btn-back:hover {
+            background: #d1d5db;
+            transform: translateY(-3px);
+        }
+
+        .order-summary-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+            border-top: 5px solid #667eea;
+        }
+
+        .summary-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            color: #4b5563;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-label {
+            font-weight: 500;
+        }
+
+        .item-value {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #f0f4ff 0%, #f3f0ff 100%);
+            border-left: 4px solid #667eea;
+            padding: 1.2rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+
+        .info-box h5 {
+            color: #667eea;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .info-box p {
+            color: #4b5563;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        footer {
+            background-color: #1f2937;
+            color: #9ca3af;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.95rem;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 968px) {
+            .cancel-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .order-summary-card {
+                position: static;
+                order: -1;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .page-header h2 {
+                font-size: 2rem;
+            }
+
+            .cancel-form-section,
+            .order-summary-card {
+                padding: 1.5rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .warning-banner {
+                padding: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'bookstore/navbar.html' %}
+
+    <section class="page-header">
+        <h2>⚠️ Cancel Order</h2>
+        <p>You're about to cancel your order</p>
+    </section>
+
+    <div class="container">
+        <a href="{% url 'order_history' %}" class="back-link">
+            ← Back to Orders
+        </a>
+
+        <div class="cancel-wrapper">
+            <div class="cancel-form-section">
+                <div class="warning-banner">
+                    <div class="warning-icon">⚠️</div>
+                    <div class="warning-content">
+                        <h4>Are you sure?</h4>
+                        <p>Cancelling this order will restore all items to our inventory. This action cannot be undone.</p>
+                    </div>
+                </div>
+
+                <form method="POST" id="cancelForm">
+                    {% csrf_token %}
+
+                    <h3 class="section-title">Cancel Order #{{ order.id }}</h3>
+
+                    <div class="form-group">
+                        <label for="cancellation_reason">Why are you cancelling? (Optional)</label>
+                        <textarea 
+                            id="cancellation_reason" 
+                            name="cancellation_reason" 
+                            placeholder="Help us improve - let us know why you're cancelling this order..."
+                            maxlength="500"></textarea>
+                        <div class="char-count">
+                            <span id="charCount">0</span>/500 characters
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="confirmCancel" required>
+                        <label for="confirmCancel" class="checkbox-text">
+                            I understand that <strong>cancelling this order will restore all items to inventory</strong> and cannot be undone.
+                        </label>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-cancel-order" id="submitBtn" disabled>
+                            🗑️ Yes, Cancel Order
+                        </button>
+                        <a href="{% url 'order_history' %}" class="btn btn-back">
+                            Keep Order
+                        </a>
+                    </div>
+                </form>
+
+                <div class="info-box">
+                    <h5>📌 What happens next?</h5>
+                    <p>Your order will be marked as cancelled, and all items will be restored to our inventory. If you had applied a coupon, it will be available for use again.</p>
+                </div>
+            </div>
+
+            <div class="order-summary-card">
+                <h3 class="summary-title">Order Details</h3>
+
+                <div class="summary-item">
+                    <span class="item-label">Order Number</span>
+                    <span class="item-value">#{{ order.id }}</span>
+                </div>
+
+                <div class="summary-item">
+                    <span class="item-label">Order Date</span>
+                    <span class="item-value">{{ order.order_date|date:"M d, Y" }}</span>
+                </div>
+
+                <div class="summary-item">
+                    <span class="item-label">Status</span>
+                    <span class="status-badge">{{ order.status }}</span>
+                </div>
+
+                <div style="margin: 1.5rem 0; padding: 1.5rem 0; border-top: 2px solid #e5e7eb; border-bottom: 2px solid #e5e7eb;">
+                    <div style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">Items in Order:</div>
+                    {% for item in order.orderitem_set.all %}
+                    <div class="summary-item" style="border-bottom: 1px dashed #e5e7eb; margin-bottom: 0.8rem; padding-bottom: 0.8rem;">
+                        <span class="item-label">{{ item.book.title }}</span>
+                        <span class="item-value">{{ item.quantity }}× Rs. {{ item.subtotal }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="summary-item" style="border-bottom: none; padding-top: 0.5rem; padding-bottom: 0.5rem;">
+                    <span class="item-label">Subtotal</span>
+                    <span class="item-value">Rs. {{ order.subtotal|floatformat:2 }}</span>
+                </div>
+
+                {% if order.shipping_fee > 0 %}
+                <div class="summary-item">
+                    <span class="item-label">Shipping</span>
+                    <span class="item-value">Rs. {{ order.shipping_fee|floatformat:2 }}</span>
+                </div>
+                {% else %}
+                <div class="summary-item">
+                    <span class="item-label">Shipping</span>
+                    <span class="item-value" style="color: #10b981;">FREE ✓</span>
+                </div>
+                {% endif %}
+
+                {% if order.total_discount > 0 %}
+                <div class="summary-item">
+                    <span class="item-label">Total Discount</span>
+                    <span class="item-value" style="color: #10b981;">-Rs. {{ order.total_discount|floatformat:2 }}</span>
+                </div>
+                {% endif %}
+
+                <div class="summary-item" style="border-bottom: none; border-top: 2px solid #e5e7eb; padding-top: 1rem; padding-bottom: 1rem; font-size: 1.2rem;">
+                    <span class="item-label">Total Amount</span>
+                    <span class="item-value" style="color: #667eea;">Rs. {{ order.total_amount|floatformat:2 }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Shelfly Online Bookstore. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const textarea = document.getElementById('cancellation_reason');
+        const charCount = document.getElementById('charCount');
+        const checkbox = document.getElementById('confirmCancel');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Update character count
+        textarea.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+        });
+
+        // Enable submit button only when checkbox is checked
+        checkbox.addEventListener('change', function() {
+            submitBtn.disabled = !this.checked;
+        });
+
+        // Show confirmation before submitting
+        document.getElementById('cancelForm').addEventListener('submit', function(e) {
+            if (!confirm('Are you absolutely sure you want to cancel this order? This action cannot be undone.')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+
+</body>
+</html>

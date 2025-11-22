@@ -1,0 +1,535 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shelfly | Available Books</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f8f9fc;
+            color: #333;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem 3rem 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h2 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            animation: fadeInDown 1s ease;
+            margin-bottom: 2rem;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 1.2s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-form {
+            position: relative;
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .search-input:focus {
+            background: white;
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .search-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .search-btn {
+            padding: 1rem 2.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .clear-search {
+            padding: 1rem 2rem;
+            background: rgba(220, 38, 38, 0.15);
+            color: white;
+            border: 3px solid rgba(220, 38, 38, 0.3);
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .clear-search:hover {
+            background: rgba(220, 38, 38, 0.25);
+            border-color: rgba(220, 38, 38, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .search-info {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%);
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .search-info p {
+            color: #1f2937;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .search-info strong {
+            color: #667eea;
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-top: 4px solid #667eea;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+            z-index: 1;
+        }
+
+        .book-card:hover::before {
+            left: 100%;
+        }
+
+        .book-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 350px;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            transition: transform 0.3s ease;
+            background: #f3f4f6;
+        }
+
+        .book-card:hover .book-cover img {
+            transform: scale(1.05);
+        }
+
+        .book-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-card h3 {
+            margin: 0 0 0.8rem 0;
+            color: #667eea;
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.4;
+            min-height: 2.8rem;
+        }
+
+        .book-card p {
+            margin: 0.5rem 0;
+            font-size: 0.95rem;
+            color: #4b5563;
+        }
+
+        .book-card p strong {
+            color: #1f2937;
+        }
+
+        .price {
+            font-size: 1.4rem;
+            color: #059669;
+            font-weight: bold;
+            margin: 1rem 0;
+            display: block;
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            padding: 0.7rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stock-info {
+            font-size: 0.9rem;
+            color: #6b7280;
+            padding: 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 0.8rem 0;
+            font-weight: 500;
+        }
+
+        .stock-available {
+            background-color: #d1fae5;
+            color: #059669;
+        }
+
+        .stock-low {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+
+        .stock-out {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        .book-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 0.8rem;
+            margin-top: auto;
+            padding-top: 1rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.9rem 1.2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            color: #1f2937;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+            transform: translateY(-3px);
+        }
+
+        .no-books {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #6b7280;
+            margin: 4rem 0;
+            padding: 3rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        footer {
+            background-color: #1f2937;
+            color: #9ca3af;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.95rem;
+        }
+
+        footer a {
+            color: #22d3ee;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .page-header h2 {
+                font-size: 2rem;
+            }
+
+            .page-header {
+                padding: 3rem 1.5rem 2.5rem 1.5rem;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .search-btn, .clear-search {
+                width: 100%;
+            }
+
+            .book-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .book-actions {
+                flex-direction: column;
+            }
+
+            .book-cover {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'bookstore/navbar.html' %}
+
+    <section class="page-header">
+        <h2>📖 Browse Our Collection</h2>
+        <p>Discover amazing books across all genres</p>
+        
+        <div class="search-container">
+            <form method="GET" action="{% url 'book_list' %}" class="search-form">
+                <input 
+                    type="text" 
+                    name="search" 
+                    class="search-input" 
+                    placeholder="Search by title, author, category, or ISBN..." 
+                    value="{{ search_query }}"
+                    autocomplete="off"
+                >
+                <button type="submit" class="search-btn">🔍 Search</button>
+                {% if search_query %}
+                    <a href="{% url 'book_list' %}" class="clear-search">✖ Clear</a>
+                {% endif %}
+            </form>
+        </div>
+    </section>
+
+    <main class="container">
+        {% if search_query %}
+            <div class="search-info">
+                <p>Showing results for: <strong>"{{ search_query }}"</strong> | Found <strong>{{ books.count }}</strong> book(s)</p>
+            </div>
+        {% endif %}
+
+        <div class="book-grid">
+            {% for book in books %}
+                <div class="book-card">
+                    <div class="book-cover">
+                        {% if book.cover_image %}
+                            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
+                        {% else %}
+                            <img src="{% static 'images/no-cover.png' %}" alt="{{ book.title }}">
+                        {% endif %}
+                    </div>
+                    
+                    <div class="book-content">
+                        <h3>{{ book.title }}</h3>
+                        <p><strong>✍️ Author:</strong> {{ book.author }}</p>
+                        <p><strong>📚 Category:</strong> {{ book.category }}</p>
+                        
+                        <div class="price">💰 Rs. {{ book.price }}</div>
+                        
+                        {% if book.stock > 0 %}
+                            {% if book.stock <= 5 %}
+                                <p class="stock-info stock-low">⚠️ Only {{ book.stock }} left in stock!</p>
+                            {% else %}
+                                <p class="stock-info stock-available">✅ In Stock ({{ book.stock }} available)</p>
+                            {% endif %}
+                        {% else %}
+                            <p class="stock-info stock-out">❌ Out of Stock</p>
+                        {% endif %}
+                        
+                        <div class="book-actions">
+                            {% if book.stock > 0 %}
+                                <a href="{% url 'add_to_cart' book.id %}" class="btn btn-primary">🛒 Add to Cart</a>
+                            {% endif %}
+                            <a href="{% url 'book_detail' book.id %}" class="btn btn-secondary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="no-books">
+                    <p style="font-size: 3rem; margin-bottom: 1rem;">🔍</p>
+                    {% if search_query %}
+                        <p>No books found matching "<strong>{{ search_query }}</strong>"</p>
+                        <p style="font-size: 0.9rem; margin-top: 1rem;">Try searching with different keywords or <a href="{% url 'book_list' %}" style="color: #667eea; text-decoration: underline;">view all books</a></p>
+                    {% else %}
+                        <p>No books available at the moment.</p>
+                        <p style="font-size: 0.9rem; margin-top: 1rem;">Check back soon for new arrivals!</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <a href="#" class="back-to-top" id="backToTop">↑</a>
+
+    <footer>
+        <p>© 2025 Shelfly Online Bookstore. All rights reserved.</p>
+        <p>Built with ❤️ for book lovers | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    </footer>
+
+    <script>
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        backToTop.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,688 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders | Shelfly</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f8f9fc;
+            color: #333;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -200px;
+            right: -100px;
+        }
+
+        .page-header h2 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+            animation: fadeInDown 1s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto 5rem auto;
+            padding: 0 2rem;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-top: 5px solid #667eea;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.15);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f3f4f6;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .order-number {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .order-number strong {
+            color: #667eea;
+            font-size: 1.3rem;
+        }
+
+        .order-date {
+            font-size: 0.9rem;
+            color: #6b7280;
+            background: #f3f4f6;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .status {
+            font-weight: 600;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status.Pending {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+            box-shadow: 0 3px 10px rgba(252, 211, 77, 0.3);
+        }
+
+        .status.Confirmed {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+            box-shadow: 0 3px 10px rgba(16, 185, 129, 0.3);
+        }
+
+        .status.Shipped {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+            box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .status.Delivered {
+            background: linear-gradient(135deg, #d1fae5 0%, #6ee7b7 100%);
+            color: #047857;
+            box-shadow: 0 3px 10px rgba(5, 150, 105, 0.3);
+        }
+
+        .status.Cancelled {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+            box-shadow: 0 3px 10px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-cancel {
+            padding: 0.5rem 1.2rem;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 3px 10px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-cancel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-cancel:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .order-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .delivery-info {
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .delivery-info h4 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 0.7rem;
+            color: #4b5563;
+        }
+
+        .info-label {
+            font-weight: 600;
+            min-width: 90px;
+            color: #6b7280;
+        }
+
+        .info-value {
+            color: #1f2937;
+        }
+
+        .order-items {
+            margin: 1.5rem 0;
+        }
+
+        .order-items h4 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            padding: 1rem 1.5rem;
+            margin-bottom: 0.8rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        li:hover {
+            transform: translateX(5px);
+        }
+
+        .item-details {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .item-name {
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        .item-quantity {
+            background: #667eea;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .item-price {
+            color: #059669;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .pricing-summary {
+            background: linear-gradient(135deg, #f0f4ff 0%, #f3f0ff 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .pricing-summary h4 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 0;
+            color: #4b5563;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.15);
+        }
+
+        .price-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .price-row.shipping {
+            padding-bottom: 0.8rem;
+            margin-bottom: 0.8rem;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        /* Beautiful Discounts Section */
+        .discounts-section {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 0.8rem 0;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .discounts-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            color: #92400e;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .discount-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0;
+            color: #92400e;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-bottom: 1px dashed rgba(146, 64, 14, 0.2);
+        }
+
+        .discount-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .discount-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .discount-amount {
+            color: #047857;
+            font-weight: 700;
+        }
+
+        .price-row.total {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 2px solid rgba(102, 126, 234, 0.3);
+            border-bottom: none;
+        }
+
+        .price-row.total .amount {
+            color: #667eea;
+        }
+
+        .total-savings-badge {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+            border: 2px dashed #10b981;
+        }
+
+        .order-footer {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #f3f4f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .no-orders {
+            text-align: center;
+            padding: 5rem 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .no-orders-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .no-orders h3 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .no-orders p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-browse {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-browse:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        footer {
+            background-color: #1f2937;
+            color: #9ca3af;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.95rem;
+        }
+
+        footer a {
+            color: #22d3ee;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .page-header h2 {
+                font-size: 2rem;
+            }
+
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .header-actions .status,
+            .header-actions .btn-cancel {
+                width: 100%;
+                text-align: center;
+            }
+
+            .order-content {
+                grid-template-columns: 1fr;
+            }
+
+            li {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.8rem;
+            }
+
+            .order-footer {
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 1rem;
+            }
+
+            .total {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'bookstore/navbar.html' %}
+
+    <section class="page-header">
+        <h2>📦 Your Orders</h2>
+        <p>Track and manage your book purchases</p>
+    </section>
+
+    <main class="container">
+        {% if orders %}
+            {% for order in orders %}
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-number">
+                            <strong>Order #{{ order.id }}</strong>
+                            <span class="order-date">📅 {{ order.order_date|date:"M d, Y - h:i A" }}</span>
+                        </div>
+                        <div class="header-actions">
+                            <span class="status {{ order.status }}">{{ order.status }}</span>
+                            {% if order.status in "Pending,Confirmed" %}
+                                <a href="{% url 'cancel_order' order.id %}" class="btn-cancel">
+                                    🗑️ Cancel Order
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="order-content">
+                        <div class="delivery-info">
+                            <h4>📍 Delivery Information</h4>
+                            <div class="info-row">
+                                <span class="info-label">Name:</span>
+                                <span class="info-value">{{ order.delivery_name }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Phone:</span>
+                                <span class="info-value">{{ order.delivery_phone }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Address:</span>
+                                <span class="info-value">{{ order.delivery_address }}</span>
+                            </div>
+                            {% if order.delivery_notes %}
+                            <div class="info-row">
+                                <span class="info-label">Notes:</span>
+                                <span class="info-value">{{ order.delivery_notes }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="pricing-summary">
+                            <h4>💰 Pricing Details</h4>
+                            <div class="price-row">
+                                <span>Subtotal</span>
+                                <span>Rs. {{ order.subtotal|floatformat:2 }}</span>
+                            </div>
+
+                            <div class="price-row shipping">
+                                <span>Shipping</span>
+                                {% if order.shipping_fee == 0 %}
+                                    <span style="color: #10b981; font-weight: 600;">FREE ✓</span>
+                                {% else %}
+                                    <span>Rs. {{ order.shipping_fee|floatformat:2 }}</span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Beautiful Discounts Section -->
+                            {% if order.coupon_discount > 0 or order.order_value_discount > 0 or order.first_time_discount > 0 %}
+                            <div class="discounts-section">
+                                <div class="discounts-header">
+                                    <span>🎉</span>
+                                    <span>Applied Discounts</span>
+                                </div>
+
+                                {% if order.coupon_discount > 0 %}
+                                <div class="discount-item">
+                                    <span class="discount-label">
+                                        <span>🎟️</span>
+                                        <span>Coupon ({{ order.discount_code_used }})</span>
+                                    </span>
+                                    <span class="discount-amount">-Rs. {{ order.coupon_discount|floatformat:2 }}</span>
+                                </div>
+                                {% endif %}
+
+                                {% if order.order_value_discount > 0 %}
+                                <div class="discount-item">
+                                    <span class="discount-label">
+                                        <span>📦</span>
+                                        <span>Order Value Discount</span>
+                                    </span>
+                                    <span class="discount-amount">-Rs. {{ order.order_value_discount|floatformat:2 }}</span>
+                                </div>
+                                {% endif %}
+
+                                {% if order.first_time_discount > 0 %}
+                                <div class="discount-item">
+                                    <span class="discount-label">
+                                        <span>⭐</span>
+                                        <span>First-Time Buyer</span>
+                                    </span>
+                                    <span class="discount-amount">-Rs. {{ order.first_time_discount|floatformat:2 }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <div class="price-row total">
+                                <span>Total</span>
+                                <span class="amount">Rs. {{ order.total_amount|floatformat:2 }}</span>
+                            </div>
+
+                            {% if order.total_discount > 0 %}
+                            <div class="total-savings-badge">
+                                <span>💰</span>
+                                <span>Saved Rs. {{ order.total_discount|floatformat:2 }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="order-items">
+                        <h4>📚 Items Ordered</h4>
+                        <ul>
+                            {% for item in order.orderitem_set.all %}
+                                <li>
+                                    <div class="item-details">
+                                        <span class="item-name">{{ item.book.title }}</span>
+                                        <span class="item-quantity">× {{ item.quantity }}</span>
+                                    </div>
+                                    <span class="item-price">Rs. {{ item.subtotal }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="order-footer">
+                        <div></div>
+                        <div class="total">💰 Total: Rs. {{ order.total_amount }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-orders">
+                <div class="no-orders-icon">📦</div>
+                <h3>No Orders Yet</h3>
+                <p>You haven't placed any orders yet. Start exploring our collection!</p>
+                <a href="{% url 'book_list' %}" class="btn-browse">Browse Books →</a>
+            </div>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>© 2025 Shelfly Online Bookstore. All rights reserved.</p>
+        <p>Built with ❤️ for book lovers | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    </footer>
+
+</body>
+</html>
