@@ -11,6 +11,33 @@ from django.db.models import Q
 from django.utils import timezone
 import re
 from django.views.decorators.http import require_http_methods
+from functools import wraps
+
+# ============================================
+# CUSTOM DECORATOR FOR CUSTOMER-ONLY VIEWS
+# ============================================
+def customer_required(view_func):
+    """
+    Decorator to ensure only users with Customer profiles can access the view.
+    Redirects admin/staff users to admin panel with a message.
+    """
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        
+        # Check if user is admin/staff
+        if request.user.is_staff or request.user.is_superuser:
+            messages.warning(request, 'This feature is for customers only. Please use the admin panel.')
+            return redirect('/admin/')
+        
+        # Check if user has a Customer profile
+        if not hasattr(request.user, 'customer'):
+            messages.error(request, 'Customer profile not found. Please contact support.')
+            return redirect('home')
+        
+        return view_func(request, *args, **kwargs)
+    return wrapper
 
 # Authentication Views
 def register(request):
@@ -139,7 +166,7 @@ def contact(request):
 
 
 # Cart Management
-@login_required(login_url='login')
+@customer_required
 def add_to_cart(request, book_id):
     book = get_object_or_404(Book, id=book_id)
     customer = request.user.customer
@@ -160,7 +187,7 @@ def add_to_cart(request, book_id):
     return redirect('view_cart')
 
 
-@login_required(login_url='login')
+@customer_required
 def view_cart(request):
     customer = request.user.customer
     cart, created = Cart.objects.get_or_create(customer=customer)
@@ -173,7 +200,7 @@ def view_cart(request):
     return render(request, 'bookstore/cart.html', context)
 
 
-@login_required(login_url='login')
+@customer_required
 def apply_coupon(request):
     if request.method == 'POST':
         coupon_code = request.POST.get('coupon_code', '').strip().upper()
@@ -212,7 +239,7 @@ def apply_coupon(request):
     return redirect('view_cart')
 
 
-@login_required(login_url='login')
+@customer_required
 def remove_coupon(request):
     if request.method == 'POST':
         customer = request.user.customer
@@ -231,7 +258,7 @@ def remove_coupon(request):
     return redirect('view_cart')
 
 
-@login_required(login_url='login')
+@customer_required
 def update_cart_item(request, item_id):
     cart_item = get_object_or_404(CartItem, id=item_id, cart__customer=request.user.customer)
     
@@ -257,7 +284,7 @@ def update_cart_item(request, item_id):
     return redirect('view_cart')
 
 
-@login_required(login_url='login')
+@customer_required
 def remove_from_cart(request, item_id):
     cart_item = get_object_or_404(CartItem, id=item_id, cart__customer=request.user.customer)
     book_title = cart_item.book.title
@@ -265,7 +292,7 @@ def remove_from_cart(request, item_id):
     messages.success(request, f"'{book_title}' removed from cart!")
     return redirect('view_cart')
 
-@login_required(login_url='login')
+@customer_required
 def edit_profile(request):
     customer = request.user.customer
     
@@ -287,7 +314,7 @@ def edit_profile(request):
     return render(request, 'bookstore/edit_profile.html', {'customer': customer})
 
 
-@login_required(login_url='login')
+@customer_required
 def cancel_order(request, order_id):
     """
     Cancel an order if it's in a cancellable state (Pending or Confirmed)
@@ -334,7 +361,7 @@ def cancel_order(request, order_id):
     }
     return render(request, 'bookstore/cancel_order.html', context)
 
-@login_required(login_url='login')
+@customer_required
 def change_password(request):
     if request.method == 'POST':
         current_password = request.POST.get('current_password')
@@ -464,7 +491,7 @@ def get_card_type(card_number):
 
 
 # Card Payment Views
-@login_required(login_url='login')
+@customer_required
 def card_payment_form(request):
     """Display card payment form"""
     customer = request.user.customer
@@ -494,7 +521,7 @@ def card_payment_form(request):
     return render(request, 'bookstore/card_payment_form.html', context)
 
 
-@login_required(login_url='login')
+@customer_required
 @require_http_methods(["POST"])
 def process_card_payment(request):
     """Process card payment and create order"""
@@ -631,7 +658,7 @@ def process_card_payment(request):
         })
 
 
-@login_required(login_url='login')
+@customer_required
 def payment_success(request, order_id):
     """Display payment success page"""
     order = get_object_or_404(Order, id=order_id, customer=request.user.customer)
@@ -652,14 +679,14 @@ def payment_success(request, order_id):
     return render(request, 'bookstore/payment_success.html', context)
 
 
-@login_required(login_url='login')
+@customer_required
 def payment_failed(request):
     """Display payment failed page"""
     return render(request, 'bookstore/payment_failed.html')
 
 
 # Update checkout view to handle card payment
-@login_required(login_url='login')
+@customer_required
 def checkout(request):
     customer = request.user.customer
     cart = get_object_or_404(Cart, customer=customer)

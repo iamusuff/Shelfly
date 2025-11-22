@@ -383,21 +383,36 @@
         <a href="{% url 'contact' %}">Contact</a>
         
         {% if user.is_authenticated %}
-            <a href="{% url 'view_cart' %}" class="cart-link">
-                🛒 Cart
-                {% if user.customer.cart.total_items > 0 %}
-                    <span class="cart-badge">{{ user.customer.cart.total_items }}</span>
-                {% endif %}
-            </a>
-            
-            <div class="navbar-user">
-                👤 {{ user.username }}
-                <div class="user-dropdown">
-                    <a href="{% url 'edit_profile' %}">📝 My Profile</a>
-                    <div class="user-dropdown-divider"></div>
-                    <a href="{% url 'order_history' %}">📦 My Orders</a>
+            {% if user.is_staff or user.is_superuser %}
+                <!-- Admin User Navigation -->
+                <a href="/admin/" class="cart-link" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3);">
+                    ⚙️ Admin Panel
+                </a>
+                
+                <div class="navbar-user">
+                    👑 {{ user.username }} (Admin)
+                    <div class="user-dropdown">
+                        <a href="/admin/">⚙️ Admin Dashboard</a>
+                    </div>
                 </div>
-            </div>
+            {% else %}
+                <!-- Regular Customer Navigation -->
+                <a href="{% url 'view_cart' %}" class="cart-link">
+                    🛒 Cart
+                    {% if user.customer.cart.total_items > 0 %}
+                        <span class="cart-badge">{{ user.customer.cart.total_items }}</span>
+                    {% endif %}
+                </a>
+                
+                <div class="navbar-user">
+                    👤 {{ user.username }}
+                    <div class="user-dropdown">
+                        <a href="{% url 'edit_profile' %}">📝 My Profile</a>
+                        <div class="user-dropdown-divider"></div>
+                        <a href="{% url 'order_history' %}">📦 My Orders</a>
+                    </div>
+                </div>
+            {% endif %}
             
             <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
         {% else %}
